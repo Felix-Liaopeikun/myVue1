@@ -22,6 +22,8 @@ const productDisplay = {
         <button class="button" :disabled='!inStock' @click="addToCart" :class="{disabledButton: !inStock}">Add To Cart</button>
         <button class="button" @click="removeFromCart">Remove From Cart</button>
       </div>
+      <review-list v-if="reviews.length" :reviews="reviews"></review-list>
+      <review-form @review-submitted="addReview"></review-form>
     </div>
   `,
   props: {
@@ -49,9 +51,13 @@ const productDisplay = {
       { id: 2235, color: 'blue', image: './assets/images/socks_blue.jpg', quantity: 0 }
     ])
     const selectedVariant = Vue.ref(0)
+    const reviews = Vue.ref([])
 
     function updateVariant(index) {
       selectedVariant.value = index;
+    }
+    function addReview(review){
+      reviews.value.push(review)
     }
     const image = Vue.computed(() => {
       return variants.value[selectedVariant.value].image
@@ -82,7 +88,9 @@ const productDisplay = {
       removeFromCart,
       updateImage,
       updateVariant,
-      shipping
+      shipping,
+      reviews,
+      addReview
     }
   }
 }
