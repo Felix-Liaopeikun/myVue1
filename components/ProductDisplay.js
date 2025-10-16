@@ -20,13 +20,14 @@ const productDisplay = {
           class="color-circle" :style="{backgroundColor: variant.color}">
         </div>
         <button class="button" :disabled='!inStock' @click="addToCart" :class="{disabledButton: !inStock}">Add To Cart</button>
+        <button class="button" @click="removeFromCart">Remove From Cart</button>
       </div>
     </div>
   `,
   props: {
     premium: Boolean
   },
-  setup(props) {
+  setup(props, { emit }) {
     const shipping = Vue.computed(() => {
       if (props.premium) {
         return 'Free'
@@ -48,7 +49,6 @@ const productDisplay = {
       { id: 2235, color: 'blue', image: './assets/images/socks_blue.jpg', quantity: 0 }
     ])
     const selectedVariant = Vue.ref(0)
-    const cart = Vue.ref(0)
 
     function updateVariant(index) {
       selectedVariant.value = index;
@@ -60,7 +60,10 @@ const productDisplay = {
       return variants.value[selectedVariant.value].quantity
     })
     function addToCart() {
-      cart.value += 1
+      emit('add-to-cart', variants.value[selectedVariant.value].id)
+    }
+    function removeFromCart() {
+      emit('remove-from-cart', variants.value[selectedVariant.value].id)
     }
     const title = Vue.computed(() => {
       return brand.value + ' ' + product.value
@@ -76,6 +79,7 @@ const productDisplay = {
       details,
       variants,
       addToCart,
+      removeFromCart,
       updateImage,
       updateVariant,
       shipping
